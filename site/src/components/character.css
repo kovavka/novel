@@ -17,5 +17,6 @@
 
 .character--sprite {
   pointer-events: none;
+  user-select: none;
   height: 100%;
 }

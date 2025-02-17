@@ -27,6 +27,11 @@ const slides = [
   },
   {
     name: 'Героиня',
+    text: '...',
+    options: ['(Извиниться)', '(Оправдаться)'],
+  },
+  {
+    name: 'Героиня',
     text: 'Простите!',
   },
 ]
@@ -35,13 +40,19 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
   const [slideIndex, setSlideIndex] = useState(0)
 
   const onClick = () => {
+    if (isOptionDialog) {
+      return
+    }
+
     if (slideIndex < slides.length - 1) {
       setSlideIndex(slideIndex + 1)
     } else {
       onFinish()
     }
   }
+
   const slide = slides[slideIndex]
+  const isOptionDialog = slide.options !== undefined
 
   if (slide.name === undefined) {
     return (
@@ -50,6 +61,11 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
         <Description text={slide.text} />
       </div>
     )
+  }
+
+  const onOptionClick = () => {
+    // support actual choice
+    setSlideIndex(slideIndex + 1)
   }
 
   const spriteName = characterNameSpriteMap[slide.name]
@@ -62,7 +78,12 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
           spritePath={characters[spriteName]}
           position={spriteName === 'fmc' ? 'left' : 'right'}
         />
-        <Dialog name={slide.name} text={slide.text} />
+        <Dialog
+          name={slide.name}
+          text={slide.text}
+          options={slide.options}
+          onOptionClick={onOptionClick}
+        />
       </div>
     </div>
   )

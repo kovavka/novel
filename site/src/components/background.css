@@ -11,6 +11,7 @@
 
 .background-sprite {
     pointer-events: none;
+    user-select: none;
     object-fit: cover;
     height: 100vh;
 }

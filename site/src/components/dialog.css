@@ -4,9 +4,13 @@
   left: 0;
   padding: 0 16px;
   width: calc(100% - 16px * 2);
+
+  -webkit-user-select: none; /* Safari */
+  user-select: none; /* Standard syntax */
 }
 
 .dialog {
+  position: relative;
   background-color: var(--color-bg-dialog-window);
   color: var(--color-text-dialog-window);
   border-radius: 2px;
@@ -21,6 +25,33 @@
 }
 
 .dialog-text {
-  padding: 16px 24px 32px;
+  padding: 16px 24px 24px;
   font-size: var(--font-size-medium);
+}
+
+.dialog-options {
+  position: absolute;
+  top: calc(100% - 16px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 16px;
+  width: calc(100% - 16px * 2);
+}
+
+.option {
+  all: unset;
+  display: block;
+
+  background-color: #282a2b;
+  color: var(--color-text-dialog-window);
+  border-radius: 2px;
+  border: 2px solid var(--color-border-dialog-window);
+  padding: 8px 12px;
+
+  font-size: var(--font-size-medium);
+}
+
+.option:active {
+  scale: 0.98;
 }
