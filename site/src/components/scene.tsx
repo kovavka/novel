@@ -12,11 +12,13 @@ type SceneProps = {
   onFinish: () => void
 }
 
-type Characters = 'chief' | 'fmc'
+const characterNameSpriteMap: Record<string, string> = {
+  Шеф: 'chief',
+  Героиня: 'fmc',
+}
 
 const slides = [
   {
-    character: 'chief',
     name: 'Шеф',
     text: 'Девочки, что стоим? Быстро за работу, заказы сами себя не сделают!',
   },
@@ -24,7 +26,6 @@ const slides = [
     text: 'Героиня сжала губы и стыдливо отвела глаза.',
   },
   {
-    character: 'fmc',
     name: 'Героиня',
     text: 'Простите!',
   },
@@ -42,20 +43,27 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
   }
   const slide = slides[slideIndex]
 
+  if (slide.name === undefined) {
+    return (
+      <div className='scene' onClick={onClick}>
+        <Background path={backgrounds.kitchen} />
+        <Description text={slide.text} />
+      </div>
+    )
+  }
+
+  const spriteName = characterNameSpriteMap[slide.name]
+
   return (
     <div className='scene' onClick={onClick}>
       <Background path={backgrounds.kitchen} />
-      {slide.character !== undefined ? (
-        <div className='character-container'>
-          <Character
-            spritePath={characters[slide.character as Characters]}
-            position={slide.character === 'fmc' ? 'left' : 'right'}
-          />
-          <Dialog name={slide.name} text={slide.text} />
-        </div>
-      ) : (
-        <Description text={slide.text} />
-      )}
+      <div className='character-container'>
+        <Character
+          spritePath={characters[spriteName]}
+          position={spriteName === 'fmc' ? 'left' : 'right'}
+        />
+        <Dialog name={slide.name} text={slide.text} />
+      </div>
     </div>
   )
 }
