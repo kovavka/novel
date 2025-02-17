@@ -9,7 +9,7 @@ export const preloadImages = () => {
     const src = (module as { default: string }).default
     img.src = src
 
-    const [, folder, fileName] = src.match(/([^/]+)\/([^/]+)\.png$/) ?? []
+    const [, folder, fileName] = src.match(/([^/]+)\/([^/-]+)(?:-[^/]+)?\.png$/) ?? []
 
     if (folder === 'backgrounds') {
       backgrounds[fileName] = src
