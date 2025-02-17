@@ -9,8 +9,10 @@ export const preloadImages = () => {
     const src = (module as { default: string }).default
     img.src = src
 
-    console.log(src)
-    const [, folder, fileName] = src.match(/([^/]+)\/([^/-]+)(?:-[^/]+)?\.png$/) ?? []
+    const [folder, fileNameFull] = src.split('/').slice(-2)
+    const fileName = fileNameFull.includes('-')
+      ? fileNameFull.split('-')[0]
+      : fileNameFull.split('.')[0]
 
     if (folder === 'backgrounds') {
       backgrounds[fileName] = src
@@ -19,6 +21,3 @@ export const preloadImages = () => {
     }
   })
 }
-
-console.log(backgrounds)
-console.log(characters)

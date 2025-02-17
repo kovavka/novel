@@ -5,7 +5,6 @@ type BackgroundProps = {
 }
 
 export const Background = ({ path }: BackgroundProps): React.ReactElement => {
-  console.log(path)
   return (
     <div className='background-sprite'>
       <img className='background' src={path} />
