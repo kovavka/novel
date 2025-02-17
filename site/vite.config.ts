@@ -5,4 +5,21 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: '/Novel',
+  build: {
+    assetsDir: 'assets',
+    rollupOptions: {
+      input: {
+        main: 'index.html',
+      },
+      output: {
+        assetFileNames: ({ originalFileName }) => {
+          if (originalFileName?.includes('backgrounds/'))
+            return 'backgrounds/[name]-[hash].[ext]'
+          if (originalFileName?.includes('characters/'))
+            return 'characters/icons/[name]-[hash].[ext]'
+          return 'assets/[name]-[hash].[ext]'
+        },
+      },
+    },
+  },
 })

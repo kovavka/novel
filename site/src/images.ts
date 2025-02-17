@@ -1,4 +1,4 @@
-const images = import.meta.glob('/public/assets/**/*.png', { eager: true })
+const images = import.meta.glob('/src/assets/**/*.png', { eager: true })
 
 export const backgrounds: Record<string, string> = {}
 export const characters: Record<string, string> = {}
