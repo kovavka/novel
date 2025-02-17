@@ -1,0 +1,16 @@
+node_modules
+
+# IDEs
+.idea/
+.vscode/
+
+.env
+app.log
+backups
+
+src/**/*.db
+
+*.log
+*_pid.txt
+
+temp.js
