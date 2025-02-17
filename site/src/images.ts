@@ -18,3 +18,6 @@ export const preloadImages = () => {
     }
   })
 }
+
+console.log(backgrounds)
+console.log(characters)
