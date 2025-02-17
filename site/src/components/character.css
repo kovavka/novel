@@ -1,0 +1,20 @@
+.character {
+  position: absolute;
+  bottom: 0;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.character__left {
+  left: 0;
+}
+
+.character__right {
+  right: 0;
+}
+
+.character--sprite {
+  height: 100%;
+}

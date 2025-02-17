@@ -1,0 +1,14 @@
+.scene {
+  position: relative;
+  max-width: calc(100vh / 16 * 9 );
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.character-container {
+  position: absolute;
+  bottom: 0;
+  height: 80vh;
+  width: 100%;
+}

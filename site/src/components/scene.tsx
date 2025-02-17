@@ -4,6 +4,8 @@ import { Character } from './character.tsx'
 import { Dialog } from './dialog.tsx'
 import { useState } from 'react'
 import { backgrounds, characters } from '../images.ts'
+import { Description } from './description.tsx'
+import './scene.css'
 
 type SceneProps = {
   sceneId: string
@@ -18,8 +20,11 @@ const slides = [
     text: 'Девочки, что стоим? Быстро за работу, заказы сами себя не сделают!',
   },
   {
+    text: 'Героиня сжала губы и стыдливо отвела глаза.',
+  },
+  {
     character: 'fmc',
-    name: 'Главная',
+    name: 'Героиня',
     text: 'Простите!',
   },
 ]
@@ -37,13 +42,17 @@ export const Scene = ({}: SceneProps): React.ReactElement => {
   return (
     <div className='scene' onClick={onClick}>
       <Background path={backgrounds.kitchen} />
-      <div className='character-container'>
-        <Character
-          spritePath={characters[slide.character as Characters]}
-          position={slide.character === 'fmc' ? 'left' : 'right'}
-        />
-        <Dialog name={slide.name} text={slide.text} />
-      </div>
+      {slide.character !== undefined ? (
+        <div className='character-container'>
+          <Character
+            spritePath={characters[slide.character as Characters]}
+            position={slide.character === 'fmc' ? 'left' : 'right'}
+          />
+          <Dialog name={slide.name} text={slide.text} />
+        </div>
+      ) : (
+        <Description text={slide.text} />
+      )}
     </div>
   )
 }

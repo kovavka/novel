@@ -3,6 +3,10 @@
 
   --font-size-small: 30px;
   --font-size-medium: 32px;
+
+  --color-bg-dialog-window: #00000099;
+  --color-text-dialog-window: #CCCCCC;
+  --color-border-dialog-window: #8B9499;
 }
 
 body {

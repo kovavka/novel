@@ -1,4 +1,5 @@
 import * as React from 'react'
+import './background.css'
 
 type BackgroundProps = {
   path: string
