@@ -14,7 +14,8 @@
   },
   "scripts": {
     "test": "jest",
-    "site:dev": "cd site && npm run dev"
+    "site:dev": "cd site && npm run dev",
+    "site:prod": "cd site && npm run build"
   },
   "keywords": [],
   "author": "",
