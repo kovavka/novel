@@ -15,8 +15,7 @@ export default defineConfig({
         assetFileNames: ({ originalFileName }) => {
           if (originalFileName?.includes('backgrounds/'))
             return 'backgrounds/[name]-[hash].[ext]'
-          if (originalFileName?.includes('characters/'))
-            return 'characters/icons/[name]-[hash].[ext]'
+          if (originalFileName?.includes('characters/')) return 'characters/[name]-[hash].[ext]'
           return 'assets/[name]-[hash].[ext]'
         },
       },
