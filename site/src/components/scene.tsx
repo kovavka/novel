@@ -9,6 +9,7 @@ import './scene.css'
 
 type SceneProps = {
   sceneId: string
+  onFinish: () => void
 }
 
 type Characters = 'chief' | 'fmc'
@@ -29,12 +30,14 @@ const slides = [
   },
 ]
 
-export const Scene = ({}: SceneProps): React.ReactElement => {
+export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
   const [slideIndex, setSlideIndex] = useState(0)
 
   const onClick = () => {
     if (slideIndex < slides.length - 1) {
       setSlideIndex(slideIndex + 1)
+    } else {
+      onFinish()
     }
   }
   const slide = slides[slideIndex]

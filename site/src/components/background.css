@@ -10,6 +10,7 @@
 }
 
 .background-sprite {
+    pointer-events: none;
     object-fit: cover;
     height: 100vh;
 }

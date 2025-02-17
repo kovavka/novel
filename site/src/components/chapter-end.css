@@ -1,0 +1,16 @@
+.chapter-end-screen {
+  position: relative;
+  max-width: calc(100vh / 16 * 9 );
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.chapter-end-screen-text {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+  font-size: var(--font-size-medium);
+  color: var(--color-text-dialog-window);
+}
