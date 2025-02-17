@@ -17,3 +17,11 @@ body {
   background: #000;
   overflow: hidden;
 }
+
+
+@media (max-width: 500px) {
+  :root {
+    --font-size-small: 24px;
+    --font-size-medium: 28px;
+  }
+}

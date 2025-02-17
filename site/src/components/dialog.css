@@ -21,6 +21,6 @@
 }
 
 .dialog-text {
-  padding: 32px 24px;
+  padding: 16px 24px 32px;
   font-size: var(--font-size-medium);
 }
