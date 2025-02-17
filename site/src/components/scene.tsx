@@ -1,22 +1,15 @@
 import * as React from 'react'
 import { Background } from './background.tsx'
-import kitchen from '../assets/background/kitchen.png'
 import { Character } from './character.tsx'
-import chiefPath from '../assets/characteres/chief.png'
-import fmcPath from '../assets/characteres/fmc.png'
 import { Dialog } from './dialog.tsx'
 import { useState } from 'react'
+import { backgrounds, characters } from '../images.ts'
 
 type SceneProps = {
   sceneId: string
 }
 
 type Characters = 'chief' | 'fmc'
-
-const characters: Record<Characters, string> = {
-  chief: chiefPath,
-  fmc: fmcPath,
-}
 
 const slides = [
   {
@@ -31,8 +24,7 @@ const slides = [
   },
 ]
 
-export const Scene = ({ sceneId }: SceneProps): React.ReactElement => {
-  console.log(sceneId)
+export const Scene = ({}: SceneProps): React.ReactElement => {
   const [slideIndex, setSlideIndex] = useState(0)
 
   const onClick = () => {
@@ -44,7 +36,7 @@ export const Scene = ({ sceneId }: SceneProps): React.ReactElement => {
 
   return (
     <div className='scene' onClick={onClick}>
-      <Background path={kitchen} />
+      <Background path={backgrounds.kitchen} />
       <div className='character-container'>
         <Character
           spritePath={characters[slide.character as Characters]}

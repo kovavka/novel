@@ -1,5 +1,8 @@
 import './App.css'
 import { Scene } from './components/scene.tsx'
+import { preloadImages } from './images.ts'
+
+preloadImages()
 
 function App() {
   return (
