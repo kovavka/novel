@@ -13,7 +13,8 @@
     ]
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "site:dev": "cd site && npm run dev"
   },
   "keywords": [],
   "author": "",

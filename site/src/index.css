@@ -1,0 +1,15 @@
+:root {
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+
+  --font-size-small: 30px;
+  --font-size-medium: 32px;
+}
+
+body {
+  all: unset;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  overflow: hidden;
+}
