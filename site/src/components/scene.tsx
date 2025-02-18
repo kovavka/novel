@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { Story } from 'inkjs'
 import { Background } from './background.tsx'
 import { Character } from './character.tsx'
@@ -7,23 +7,24 @@ import { useState } from 'react'
 import { backgroundSprites, characterSprites } from '../images.ts'
 import { Description } from './description.tsx'
 import './scene.css'
-import chapter1 from '../assets/chapters/1.json'
+import { Info } from './info.tsx'
 
 type SceneProps = {
-  sceneId: string
+  story: Story
   onFinish: () => void
 }
 
-const characterNameSpriteMap: Record<string, string> = {
+const characterNameMap: Record<string, string> = {
   chef: 'Минг',
   main: 'Анна',
   waitress: 'Официантка',
   waitress2: 'Официантка',
 }
 
-const story = new Story(chapter1)
-// todo move to app -> should activate after chapter title click
-story.Continue()
+const variableMap: Record<string, string> = {
+  harsh: 'Прямолинейность',
+  control: 'Сдержанность',
+}
 
 function parseTags(tags: string[]): Record<string, string | undefined> {
   return tags.reduce((acc, tag) => {
@@ -36,8 +37,9 @@ function parseTags(tags: string[]): Record<string, string | undefined> {
   }, {})
 }
 
-export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
+export const Scene = React.memo(({ story, onFinish }: SceneProps): React.ReactElement => {
   const [animationExit, setAnimationExit] = useState(false)
+  const [infoText, setInfoText] = useState<string | undefined>(undefined)
   const continueFnRef = useRef<() => void>(undefined)
   const currentLocationRef = useRef<string>('story-main')
 
@@ -53,8 +55,6 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
   if (location !== undefined) {
     currentLocationRef.current = location
   }
-
-  console.log(story)
 
   const onClick = () => {
     if (animationExit) {
@@ -75,6 +75,19 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
     setAnimationExit(true)
   }
 
+  const onVariableChange = useCallback((variableName: string, newValue: any) => {
+    // todo need to compare against prev value
+    setInfoText(`${variableMap[variableName]} + 1`)
+  }, [])
+
+  useEffect(() => {
+    story.ObserveVariables(['harsh', 'control'], [onVariableChange])
+
+    return () => {
+      story.RemoveVariableObserver(onVariableChange)
+    }
+  }, [story])
+
   useEffect(() => {
     if (animationExit) {
       document.body.classList.add('animation-exit')
@@ -94,8 +107,6 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
   const backgroundSpriteName = currentLocationRef.current
   const backgroundPath = backgroundSprites[backgroundSpriteName]
 
-  console.log(characterId)
-
   if (parsedTags['narrator'] !== undefined || characterId === undefined) {
     return (
       <div className='scene' onClick={onClick}>
@@ -105,7 +116,7 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
     )
   }
 
-  const characterName = characterNameSpriteMap[characterId]
+  const characterName = characterNameMap[characterId]
   const options = currentChoices.map(x => ({ index: x.index, text: x.text }))
 
   const onOptionClick = (index: number) => {
@@ -124,6 +135,8 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
   return (
     <div className='scene' onClick={onClick}>
       <Background path={backgroundPath} />
+      {infoText !== undefined && <Info text={infoText} />}
+
       <div className='character-container'>
         <Character
           key={characterId}
@@ -141,4 +154,4 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
       </div>
     </div>
   )
-}
+})

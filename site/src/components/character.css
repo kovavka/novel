@@ -9,20 +9,20 @@
 
 .character-left {
   left: 0;
-  animation: slideInLeft var(--animation-duration) var(--animation-fn);
+  animation: slideInLeft var(--animation-duration) var(--animation-fn) forwards;
 }
 
 .character-right {
   right: 0;
-  animation: slideInRight var(--animation-duration) var(--animation-fn);
+  animation: slideInRight var(--animation-duration) var(--animation-fn) forwards;
 }
 
 .animation-exit .character-left {
-  animation: slideInLeft var(--animation-duration) var(--animation-fn) reverse;
+  animation: slideOutLeft var(--animation-duration) var(--animation-fn) forwards;
 }
 
 .animation-exit .character-right {
-  animation: slideInRight var(--animation-duration) var(--animation-fn) reverse;
+  animation: slideOutRight var(--animation-duration) var(--animation-fn) forwards;
 }
 
 .character-sprite {

@@ -16,11 +16,11 @@
   border-radius: 2px;
   border: 2px solid var(--color-border-dialog-window);
   backdrop-filter: blur(4px);
-  animation: slideInBottom var(--animation-duration) var(--animation-fn);
+  animation: slideInBottom var(--animation-duration) var(--animation-fn) forwards;
 }
 
 .animation-exit .dialog {
-  animation: slideInBottom var(--animation-duration) var(--animation-fn) reverse;
+  animation: slideOutBottom var(--animation-duration) var(--animation-fn) forwards;
 }
 
 .dialog-name {
