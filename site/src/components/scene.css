@@ -9,6 +9,6 @@
 .character-container {
   position: absolute;
   bottom: 0;
-  height: 80vh;
+  height: calc(0.8 * var(--viewport-available-height));
   width: 100%;
 }
