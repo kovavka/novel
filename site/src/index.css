@@ -10,13 +10,15 @@
 
   --animation-duration: 300ms;
   --animation-fn: cubic-bezier(0, 0, 0.6, 1);;
+
+  --viewport-available-height: 100vh;
 }
 
 body {
   all: unset;
   display: block;
   width: 100vw;
-  height: 100vh;
+  height: var(--viewport-available-height);
   background: #000;
   overflow: hidden;
 }

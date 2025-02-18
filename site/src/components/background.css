@@ -3,7 +3,7 @@
     top: 0;
     left: 0;
     z-index: -1;
-    height: 100vh;
+    height: var(--viewport-available-height);
     display: flex;
     align-items: end;
     justify-content: center;
@@ -13,5 +13,5 @@
     pointer-events: none;
     user-select: none;
     object-fit: cover;
-    height: 100vh;
+    height: var(--viewport-available-height);
 }

@@ -12,6 +12,8 @@ function App() {
 
   useEffect(() => {
     preloadImages().then(() => setIsLoaded(true))
+
+    document.body.style.setProperty('--viewport-available-height', `${window.innerHeight}px`)
   }, [])
 
   if (!isLoaded) {

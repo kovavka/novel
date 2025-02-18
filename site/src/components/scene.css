@@ -1,8 +1,8 @@
 .scene {
   position: relative;
-  max-width: calc(100vh / 16 * 9 );
+  max-width: calc(var(--viewport-available-height) / 16 * 9 );
   width: 100vw;
-  height: 100vh;
+  height: var(--viewport-available-height);
   overflow: hidden;
 }
 

@@ -97,6 +97,7 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
       <Background path={backgroundSprites.kitchen} />
       <div className='character-container'>
         <Character
+          key={spriteName}
           spritePath={characterSprites[spriteName]}
           position={spriteName === 'fmc' ? 'left' : 'right'}
         />
