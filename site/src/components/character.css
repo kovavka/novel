@@ -7,15 +7,25 @@
   justify-content: center;
 }
 
-.character__left {
+.character-left {
   left: 0;
+  animation: slideInLeft var(--animation-duration) var(--animation-fn);
 }
 
-.character__right {
+.character-right {
   right: 0;
+  animation: slideInRight var(--animation-duration) var(--animation-fn);
 }
 
-.character--sprite {
+.animation-exit .character-left {
+  animation: slideInLeft var(--animation-duration) var(--animation-fn) reverse;
+}
+
+.animation-exit .character-right {
+  animation: slideInRight var(--animation-duration) var(--animation-fn) reverse;
+}
+
+.character-sprite {
   pointer-events: none;
   user-select: none;
   height: 100%;

@@ -16,6 +16,11 @@
   border-radius: 2px;
   border: 2px solid var(--color-border-dialog-window);
   backdrop-filter: blur(4px);
+  animation: slideInBottom var(--animation-duration) var(--animation-fn);
+}
+
+.animation-exit .dialog {
+  animation: slideInBottom var(--animation-duration) var(--animation-fn) reverse;
 }
 
 .dialog-name {
@@ -25,7 +30,7 @@
 }
 
 .dialog-text {
-  padding: 16px 24px 24px;
+  padding: 16px 24px 32px;
   font-size: var(--font-size-medium);
 }
 
@@ -49,7 +54,7 @@
   border: 2px solid var(--color-border-dialog-window);
   padding: 8px 12px;
 
-  font-size: var(--font-size-medium);
+  font-size: var(--font-size-small);
 }
 
 .option:active {

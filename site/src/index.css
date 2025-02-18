@@ -7,6 +7,9 @@
   --color-bg-dialog-window: #00000099;
   --color-text-dialog-window: #CCCCCC;
   --color-border-dialog-window: #8B9499;
+
+  --animation-duration: 300ms;
+  --animation-fn: cubic-bezier(0, 0, 0.6, 1);;
 }
 
 body {

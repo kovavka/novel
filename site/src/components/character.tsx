@@ -11,11 +11,11 @@ export const Character = ({ spritePath, position }: CharacterProps): React.React
   return (
     <div
       className={classnames('character', {
-        character__right: position === 'right',
-        character__left: position === 'left',
+        'character-right': position === 'right',
+        'character-left': position === 'left',
       })}
     >
-      <img className='character--sprite' src={spritePath} />
+      <img className='character-sprite' src={spritePath} />
     </div>
   )
 }

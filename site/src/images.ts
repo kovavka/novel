@@ -1,7 +1,7 @@
 const images = import.meta.glob('/src/assets/**/*.png', { eager: true })
 
-export const backgrounds: Record<string, string> = {}
-export const characters: Record<string, string> = {}
+export const backgroundSprites: Record<string, string> = {}
+export const characterSprites: Record<string, string> = {}
 
 export const preloadImages = async (): Promise<void> => {
   const promises = Object.values(images).map(module => {
@@ -18,9 +18,9 @@ export const preloadImages = async (): Promise<void> => {
         : fileNameFull.split('.')[0]
 
       if (folder === 'backgrounds') {
-        backgrounds[fileName] = src
+        backgroundSprites[fileName] = src
       } else if (folder === 'characters') {
-        characters[fileName] = src
+        characterSprites[fileName] = src
       }
     })
   })

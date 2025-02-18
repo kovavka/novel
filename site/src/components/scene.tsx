@@ -1,9 +1,9 @@
-import * as React from 'react'
+import React, { useEffect } from 'react'
 import { Background } from './background.tsx'
 import { Character } from './character.tsx'
 import { Dialog } from './dialog.tsx'
 import { useState } from 'react'
-import { backgrounds, characters } from '../images.ts'
+import { backgroundSprites, characterSprites } from '../images.ts'
 import { Description } from './description.tsx'
 import './scene.css'
 
@@ -34,22 +34,40 @@ const slides = [
     name: 'Героиня',
     text: 'Простите!',
   },
+  {
+    name: 'Шеф',
+    text: 'Два цезаря, бегом.',
+  },
 ]
 
 export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
   const [slideIndex, setSlideIndex] = useState(0)
+  const [animationExit, setAnimationExit] = useState(false)
 
   const onClick = () => {
-    if (isOptionDialog) {
+    if (animationExit || isOptionDialog) {
       return
     }
 
     if (slideIndex < slides.length - 1) {
-      setSlideIndex(slideIndex + 1)
+      setAnimationExit(true)
     } else {
       onFinish()
     }
   }
+
+  useEffect(() => {
+    if (animationExit) {
+      document.body.classList.add('animation-exit')
+      setTimeout(() => {
+        setAnimationExit(false)
+        document.body.classList.remove('animation-exit')
+
+        // goToNextSlide
+        setSlideIndex(slideIndex + 1)
+      }, 250)
+    }
+  }, [animationExit, slideIndex])
 
   const slide = slides[slideIndex]
   const isOptionDialog = slide.options !== undefined
@@ -57,28 +75,33 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
   if (slide.name === undefined) {
     return (
       <div className='scene' onClick={onClick}>
-        <Background path={backgrounds.kitchen} />
+        <Background path={backgroundSprites.kitchen} />
         <Description text={slide.text} />
       </div>
     )
   }
 
   const onOptionClick = () => {
+    if (animationExit) {
+      return
+    }
+
     // support actual choice
-    setSlideIndex(slideIndex + 1)
+    setAnimationExit(true)
   }
 
   const spriteName = characterNameSpriteMap[slide.name]
 
   return (
     <div className='scene' onClick={onClick}>
-      <Background path={backgrounds.kitchen} />
+      <Background path={backgroundSprites.kitchen} />
       <div className='character-container'>
         <Character
-          spritePath={characters[spriteName]}
+          spritePath={characterSprites[spriteName]}
           position={spriteName === 'fmc' ? 'left' : 'right'}
         />
         <Dialog
+          key={slideIndex}
           name={slide.name}
           text={slide.text}
           options={slide.options}
