@@ -34,6 +34,10 @@
   font-size: var(--font-size-medium);
 }
 
+.dialog-text-italic {
+  font-style: italic;
+}
+
 .dialog-options {
   position: absolute;
   top: calc(100% - 16px);

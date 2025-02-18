@@ -15,27 +15,46 @@ type SceneProps = {
 }
 
 const characterNameSpriteMap: Record<string, string> = {
-  chief: 'Шеф',
-  fmc: 'Анна',
+  chef: 'Минг',
+  main: 'Анна',
+  waitress: 'Официантка',
+  waitress2: 'Официантка',
 }
 
 const story = new Story(chapter1)
 // todo move to app -> should activate after chapter title click
 story.Continue()
 
+function parseTags(tags: string[]): Record<string, string | undefined> {
+  return tags.reduce((acc, tag) => {
+    if (tag.includes(':')) {
+      const [key, value] = tag.split(':')
+      return { ...acc, [key.trim()]: value.trim() }
+    }
+
+    return { ...acc, [tag]: 'true' }
+  }, {})
+}
+
 export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
   const [animationExit, setAnimationExit] = useState(false)
   const continueFnRef = useRef<() => void>(undefined)
+  const currentLocationRef = useRef<string>('story-main')
 
-  const { currentText = '', currentTags = [], currentChoices } = story
-  const characterId =
-    currentTags
-      .find(x => x.startsWith('character'))
-      ?.split(':')[1]
-      .trim() ?? ''
+  const { currentText, currentTags, currentChoices } = story
 
-  const characterName = characterNameSpriteMap[characterId]
-  const options = currentChoices.map(x => ({ index: x.index, text: x.text }))
+  const parsedTags = parseTags(currentTags ?? [])
+
+  const characterId = parsedTags['character']
+  const location = parsedTags['location']
+  const italicStyle = parsedTags['italic'] !== undefined
+  const position = (parsedTags['position'] ?? characterId === 'main') ? 'left' : 'right'
+
+  if (location !== undefined) {
+    currentLocationRef.current = location
+  }
+
+  console.log(story)
 
   const onClick = () => {
     if (animationExit) {
@@ -72,14 +91,22 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
     }
   }, [animationExit]) // todo add story dependency
 
-  if (characterId === 'author') {
+  const backgroundSpriteName = currentLocationRef.current
+  const backgroundPath = backgroundSprites[backgroundSpriteName]
+
+  console.log(characterId)
+
+  if (parsedTags['narrator'] !== undefined || characterId === undefined) {
     return (
       <div className='scene' onClick={onClick}>
-        <Background path={backgroundSprites.kitchen} />
-        <Description text={currentText} />
+        <Background path={backgroundPath} />
+        <Description text={currentText ?? ''} />
       </div>
     )
   }
+
+  const characterName = characterNameSpriteMap[characterId]
+  const options = currentChoices.map(x => ({ index: x.index, text: x.text }))
 
   const onOptionClick = (index: number) => {
     if (animationExit) {
@@ -96,17 +123,18 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
 
   return (
     <div className='scene' onClick={onClick}>
-      <Background path={backgroundSprites.kitchen} />
+      <Background path={backgroundPath} />
       <div className='character-container'>
         <Character
-          // key={spriteName}
+          key={characterId}
           spritePath={characterSprites[characterId]}
-          position={characterId === 'fmc' ? 'left' : 'right'}
+          position={position}
         />
         <Dialog
           // key={slideIndex}
           name={characterName}
-          text={currentText}
+          text={currentText ?? ''}
+          italic={italicStyle}
           options={options}
           onOptionClick={onOptionClick}
         />

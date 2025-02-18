@@ -4,7 +4,7 @@ import './chapter-end.css'
 export const ChapterEnd = (): React.ReactElement => {
   return (
     <div className='chapter-end-screen'>
-      <div className='chapter-end-screen-text'>Глава закочена!</div>
+      <div className='chapter-end-screen-text'>Продолжение следует...</div>
     </div>
   )
 }

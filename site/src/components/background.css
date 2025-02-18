@@ -7,6 +7,7 @@
     display: flex;
     align-items: end;
     justify-content: center;
+    animation: fadeIn var(--animation-duration) var(--animation-fn);
 }
 
 .background-sprite {
@@ -14,4 +15,9 @@
     user-select: none;
     object-fit: cover;
     height: var(--viewport-available-height);
+}
+
+
+.animation-exit .background {
+    animation: fadeIn var(--animation-duration) var(--animation-fn) reverse;
 }
