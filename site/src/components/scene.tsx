@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { Story } from 'inkjs'
 import { Background } from './background.tsx'
 import { Character } from './character.tsx'
 import { Dialog } from './dialog.tsx'
@@ -6,6 +7,7 @@ import { useState } from 'react'
 import { backgroundSprites, characterSprites } from '../images.ts'
 import { Description } from './description.tsx'
 import './scene.css'
+import chapter1 from '../assets/chapters/1.json'
 
 type SceneProps = {
   sceneId: string
@@ -13,47 +15,45 @@ type SceneProps = {
 }
 
 const characterNameSpriteMap: Record<string, string> = {
-  Шеф: 'chief',
-  Героиня: 'fmc',
+  chief: 'Шеф',
+  fmc: 'Анна',
 }
 
-const slides = [
-  {
-    name: 'Шеф',
-    text: 'Девочки, что стоим? Быстро за работу, заказы сами себя не сделают!',
-  },
-  {
-    text: 'Героиня сжала губы и стыдливо отвела глаза.',
-  },
-  {
-    name: 'Героиня',
-    text: '...',
-    options: ['(Извиниться)', '(Оправдаться)'],
-  },
-  {
-    name: 'Героиня',
-    text: 'Простите!',
-  },
-  {
-    name: 'Шеф',
-    text: 'Два цезаря, бегом.',
-  },
-]
+const story = new Story(chapter1)
+// todo move to app -> should activate after chapter title click
+story.Continue()
 
 export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
-  const [slideIndex, setSlideIndex] = useState(0)
   const [animationExit, setAnimationExit] = useState(false)
+  const continueFnRef = useRef<() => void>(undefined)
+
+  const { currentText = '', currentTags = [], currentChoices } = story
+  const characterId =
+    currentTags
+      .find(x => x.startsWith('character'))
+      ?.split(':')[1]
+      .trim() ?? ''
+
+  const characterName = characterNameSpriteMap[characterId]
+  const options = currentChoices.map(x => ({ index: x.index, text: x.text }))
 
   const onClick = () => {
-    if (animationExit || isOptionDialog) {
+    if (animationExit) {
       return
     }
 
-    if (slideIndex < slides.length - 1) {
-      setAnimationExit(true)
-    } else {
-      onFinish()
+    if (!story.canContinue) {
+      if (currentChoices.length > 0) {
+        // in dialog option
+        return
+      } else {
+        onFinish()
+        return
+      }
     }
+
+    continueFnRef.current = () => story.Continue()
+    setAnimationExit(true)
   }
 
   useEffect(() => {
@@ -63,49 +63,51 @@ export const Scene = ({ onFinish }: SceneProps): React.ReactElement => {
         setAnimationExit(false)
         document.body.classList.remove('animation-exit')
 
-        // goToNextSlide
-        setSlideIndex(slideIndex + 1)
+        const continueFn = continueFnRef.current
+        if (continueFn !== undefined) {
+          continueFn()
+        }
+        continueFnRef.current = undefined
       }, 250)
     }
-  }, [animationExit, slideIndex])
+  }, [animationExit]) // todo add story dependency
 
-  const slide = slides[slideIndex]
-  const isOptionDialog = slide.options !== undefined
-
-  if (slide.name === undefined) {
+  if (characterId === 'author') {
     return (
       <div className='scene' onClick={onClick}>
         <Background path={backgroundSprites.kitchen} />
-        <Description text={slide.text} />
+        <Description text={currentText} />
       </div>
     )
   }
 
-  const onOptionClick = () => {
+  const onOptionClick = (index: number) => {
     if (animationExit) {
       return
     }
 
-    // support actual choice
+    continueFnRef.current = () => {
+      story.ChooseChoiceIndex(index)
+      // todo check later
+      story.Continue()
+    }
     setAnimationExit(true)
   }
-
-  const spriteName = characterNameSpriteMap[slide.name]
 
   return (
     <div className='scene' onClick={onClick}>
       <Background path={backgroundSprites.kitchen} />
       <div className='character-container'>
         <Character
-          key={spriteName}
-          spritePath={characterSprites[spriteName]}
-          position={spriteName === 'fmc' ? 'left' : 'right'}
+          // key={spriteName}
+          spritePath={characterSprites[characterId]}
+          position={characterId === 'fmc' ? 'left' : 'right'}
         />
         <Dialog
-          key={slideIndex}
-          name={slide.name}
-          text={slide.text}
-          options={slide.options}
+          // key={slideIndex}
+          name={characterName}
+          text={currentText}
+          options={options}
           onOptionClick={onOptionClick}
         />
       </div>
