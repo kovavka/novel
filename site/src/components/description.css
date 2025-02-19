@@ -28,6 +28,6 @@
 /* transitions end */
 
 .description-text {
-    padding: 32px 24px;
+    padding: var(--padding-large) var(--padding-medium);
     font-size: var(--font-size-medium);
 }

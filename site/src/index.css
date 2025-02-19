@@ -4,6 +4,10 @@
   --font-size-small: 30px;
   --font-size-medium: 32px;
 
+  --padding-small: 16px;
+  --padding-medium: 24px;
+  --padding-large: 32px;
+
   --color-bg-dialog-window: #00000099;
   --color-text-dialog-window: #CCCCCC;
   --color-border-dialog-window: #8B9499;
@@ -26,7 +30,11 @@ body {
 
 @media (max-width: 500px) {
   :root {
-    --font-size-small: 24px;
-    --font-size-medium: 28px;
+    --font-size-small: 20px;
+    --font-size-medium: 24px;
+
+    --padding-small: 12px;
+    --padding-medium: 18px;
+    --padding-large: 24px;
   }
 }

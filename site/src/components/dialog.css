@@ -29,13 +29,13 @@
 /* transitions end */
 
 .dialog-name {
-  padding: 12px 36px;
+  padding: var(--padding-small) var(--padding-large);
   font-size: var(--font-size-small);
   border-bottom: 2px solid var(--color-border-dialog-window);
 }
 
 .dialog-text {
-  padding: 16px 24px 32px;
+  padding: var(--padding-small) var(--padding-medium) var(--padding-large);
   font-size: var(--font-size-medium);
 }
 
