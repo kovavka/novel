@@ -16,12 +16,17 @@
   border-radius: 2px;
   border: 2px solid var(--color-border-dialog-window);
   backdrop-filter: blur(4px);
+}
+
+/* transitions */
+.dialog, .dialog-enter-active {
   animation: slideInBottom var(--animation-duration) var(--animation-fn) forwards;
 }
 
-.animation-exit .dialog {
+.dialog-exit-active {
   animation: slideOutBottom var(--animation-duration) var(--animation-fn) forwards;
 }
+/* transitions end */
 
 .dialog-name {
   padding: 12px 36px;

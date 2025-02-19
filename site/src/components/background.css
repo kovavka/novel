@@ -7,7 +7,6 @@
     display: flex;
     align-items: end;
     justify-content: center;
-    animation: fadeIn var(--animation-duration) var(--animation-fn) forwards;
 }
 
 .background-sprite {
@@ -17,6 +16,12 @@
     height: var(--viewport-available-height);
 }
 
-.animation-exit .background {
+/* transitions */
+.background, .background-enter-active {
+    animation: fadeIn var(--animation-duration) var(--animation-fn) forwards;
+}
+
+.background-exit-active {
     animation: fadeOut var(--animation-duration) var(--animation-fn) forwards;
 }
+/* transitions end */

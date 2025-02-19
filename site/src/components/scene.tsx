@@ -1,12 +1,13 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { Story } from 'inkjs'
 import { Background } from './background.tsx'
 import { Character } from './character.tsx'
-import { Dialog } from './dialog.tsx'
+import { Dialog, DialogOption } from './dialog.tsx'
 import { useState } from 'react'
-import { backgroundSprites, characterSprites } from '../images.ts'
+import { backgroundSprites } from '../images.ts'
 import { Description } from './description.tsx'
 import './scene.css'
+import { ANIMATIONS_DURATION } from '../variables.ts'
 import { Info } from './info.tsx'
 
 type SceneProps = {
@@ -37,10 +38,95 @@ function parseTags(tags: string[]): Record<string, string | undefined> {
   }, {})
 }
 
-export const Scene = React.memo(({ story, onFinish }: SceneProps): React.ReactElement => {
-  const [animationExit, setAnimationExit] = useState(false)
+type SceneState = {
+  character?: {
+    id: string
+    position: 'left' | 'right'
+  }
+  text: string
+  italicStyle: boolean
+  options: DialogOption[]
+  locationId: string
+}
+
+type SceneInnerProps = SceneState & {
+  transitionInProgress: boolean
+  onContinue: () => void
+  onOptionChoose: (index: number) => void
+  infoText?: string
+  bgTransition: boolean
+}
+
+export const SceneInner = ({
+  onContinue,
+  onOptionChoose,
+  transitionInProgress,
+  infoText,
+  bgTransition,
+  ...restProps
+}: SceneInnerProps): React.ReactElement => {
+  const prevState = useRef<SceneState>(undefined)
+
+  const onSlideClick = () => {
+    if (transitionInProgress) {
+      return
+    }
+
+    prevState.current = restProps
+    onContinue()
+  }
+
+  const onOptionClick = (index: number) => {
+    if (transitionInProgress) {
+      return
+    }
+
+    prevState.current = restProps
+    onOptionChoose(index)
+  }
+
+  const characterChanged = prevState.current?.character !== restProps.character
+  const bgChanged = prevState.current?.locationId !== restProps.locationId || bgTransition
+
+  // when transition is in progress, we need to render prev state, so we can hide it with animation
+  const state =
+    transitionInProgress && prevState.current !== undefined ? prevState.current : restProps
+
+  const { character, text, options, locationId } = state
+  const backgroundPath = backgroundSprites[locationId]
+
+  return (
+    <div className='scene' onClick={onSlideClick}>
+      <Background visible={!(transitionInProgress && bgChanged)} path={backgroundPath} />
+      {infoText !== undefined && <Info text={infoText} />}
+
+      {character !== undefined && (
+        <div className='character-container'>
+          <Character
+            visible={!(transitionInProgress && characterChanged)}
+            id={character.id}
+            position={character.position}
+          />
+
+          <Dialog
+            visible={!transitionInProgress}
+            name={characterNameMap[character.id]}
+            text={text}
+            italic={state.italicStyle}
+            options={options}
+            onOptionClick={onOptionClick}
+          />
+        </div>
+      )}
+
+      {character === undefined && <Description visible={!transitionInProgress} text={text} />}
+    </div>
+  )
+}
+
+export const Scene = ({ story, onFinish }: SceneProps): React.ReactElement => {
   const [infoText, setInfoText] = useState<string | undefined>(undefined)
-  const continueFnRef = useRef<() => void>(undefined)
+  const [transitionInProgress, setTransitionInProgress] = useState(false)
   const currentLocationRef = useRef<string>('story-main')
 
   const { currentText, currentTags, currentChoices } = story
@@ -50,108 +136,85 @@ export const Scene = React.memo(({ story, onFinish }: SceneProps): React.ReactEl
   const characterId = parsedTags['character']
   const location = parsedTags['location']
   const italicStyle = parsedTags['italic'] !== undefined
+  const bgTransition = parsedTags['transition'] !== undefined
   const position = (parsedTags['position'] ?? characterId === 'main') ? 'left' : 'right'
 
   if (location !== undefined) {
     currentLocationRef.current = location
   }
 
-  const onClick = () => {
-    if (animationExit) {
-      return
-    }
-
-    if (!story.canContinue) {
-      if (currentChoices.length > 0) {
-        // in dialog option
-        return
-      } else {
-        onFinish()
-        return
-      }
-    }
-
-    continueFnRef.current = () => story.Continue()
-    setAnimationExit(true)
-  }
-
-  const onVariableChange = useCallback((variableName: string, newValue: any) => {
+  const onVariableChange = useCallback((variableName: string, _newValue: any) => {
     // todo need to compare against prev value
+    console.log(variableName, variableMap[variableName])
     setInfoText(`${variableMap[variableName]} + 1`)
   }, [])
 
   useEffect(() => {
-    story.ObserveVariables(['harsh', 'control'], [onVariableChange])
+    story.ObserveVariable('harsh', onVariableChange)
+    story.ObserveVariable('control', onVariableChange)
 
     return () => {
-      story.RemoveVariableObserver(onVariableChange)
+      story.RemoveVariableObserver(onVariableChange, 'harsh')
+      story.RemoveVariableObserver(onVariableChange, 'control')
     }
   }, [story])
 
   useEffect(() => {
-    if (animationExit) {
-      document.body.classList.add('animation-exit')
+    if (transitionInProgress) {
       setTimeout(() => {
-        setAnimationExit(false)
-        document.body.classList.remove('animation-exit')
-
-        const continueFn = continueFnRef.current
-        if (continueFn !== undefined) {
-          continueFn()
-        }
-        continueFnRef.current = undefined
-      }, 250)
+        setTransitionInProgress(false)
+      }, ANIMATIONS_DURATION)
     }
-  }, [animationExit]) // todo add story dependency
+  }, [transitionInProgress])
 
-  const backgroundSpriteName = currentLocationRef.current
-  const backgroundPath = backgroundSprites[backgroundSpriteName]
+  // todo support queue
+  useEffect(() => {
+    if (infoText !== undefined) {
+      setTimeout(() => {
+        setInfoText(undefined)
+      }, 2300)
+    }
+  }, [infoText])
 
-  if (parsedTags['narrator'] !== undefined || characterId === undefined) {
-    return (
-      <div className='scene' onClick={onClick}>
-        <Background path={backgroundPath} />
-        <Description text={currentText ?? ''} />
-      </div>
-    )
+  const onContinue = () => {
+    if (story.canContinue) {
+      story.Continue()
+      setTransitionInProgress(true)
+    } else {
+      // otherwise we are in dialog option -> do nothing
+      if (currentChoices.length === 0) {
+        onFinish()
+      }
+    }
   }
-
-  const characterName = characterNameMap[characterId]
-  const options = currentChoices.map(x => ({ index: x.index, text: x.text }))
 
   const onOptionClick = (index: number) => {
-    if (animationExit) {
-      return
-    }
-
-    continueFnRef.current = () => {
-      story.ChooseChoiceIndex(index)
-      // todo check later
-      story.Continue()
-    }
-    setAnimationExit(true)
+    story.ChooseChoiceIndex(index)
+    setTransitionInProgress(true)
   }
 
-  return (
-    <div className='scene' onClick={onClick}>
-      <Background path={backgroundPath} />
-      {infoText !== undefined && <Info text={infoText} />}
+  // todo memo?
+  const options = currentChoices.map(x => ({ index: x.index, text: x.text }))
 
-      <div className='character-container'>
-        <Character
-          key={characterId}
-          spritePath={characterSprites[characterId]}
-          position={position}
-        />
-        <Dialog
-          // key={slideIndex}
-          name={characterName}
-          text={currentText ?? ''}
-          italic={italicStyle}
-          options={options}
-          onOptionClick={onOptionClick}
-        />
-      </div>
-    </div>
+  const character = useMemo<SceneState['character']>(() => {
+    if (characterId !== undefined) {
+      return { id: characterId, position }
+    }
+    return undefined
+  }, [characterId, position])
+
+  return (
+    <SceneInner
+      transitionInProgress={transitionInProgress}
+      onContinue={onContinue}
+      onOptionChoose={onOptionClick}
+      locationId={currentLocationRef.current}
+      character={character}
+      text={currentText ?? ''}
+      italicStyle={italicStyle}
+      options={options}
+      infoText={infoText}
+      bgTransition={bgTransition}
+    />
   )
-})
+}

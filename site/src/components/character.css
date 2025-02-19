@@ -7,26 +7,36 @@
   justify-content: center;
 }
 
-.character-left {
-  left: 0;
-  animation: slideInLeft var(--animation-duration) var(--animation-fn) forwards;
-}
-
-.character-right {
-  right: 0;
-  animation: slideInRight var(--animation-duration) var(--animation-fn) forwards;
-}
-
-.animation-exit .character-left {
-  animation: slideOutLeft var(--animation-duration) var(--animation-fn) forwards;
-}
-
-.animation-exit .character-right {
-  animation: slideOutRight var(--animation-duration) var(--animation-fn) forwards;
-}
-
 .character-sprite {
   pointer-events: none;
   user-select: none;
   height: 100%;
+}
+
+/* LEFT */
+.character-left {
+  left: 0;
+}
+
+/* LEFT transitions */
+.character-left, .character-enter-active.character-left {
+  animation: slideInLeft var(--animation-duration) var(--animation-fn) forwards;
+}
+
+.character-exit-active.character-left {
+  animation: slideOutLeft var(--animation-duration) var(--animation-fn) forwards;
+}
+
+/* RIGHT */
+.character-right {
+  right: 0;
+}
+
+/* RIGHT transitions */
+.character-right, .character-enter-active.character-right {
+  animation: slideInRight var(--animation-duration) var(--animation-fn) forwards;
+}
+
+.character-exit-active.character-right {
+  animation: slideOutRight var(--animation-duration) var(--animation-fn) forwards;
 }

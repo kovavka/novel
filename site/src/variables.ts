@@ -1,0 +1,1 @@
+export const ANIMATIONS_DURATION = 300
