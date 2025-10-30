@@ -16,14 +16,13 @@ type SceneProps = {
 }
 
 const characterNameMap: Record<string, string> = {
-  chef: 'Минг',
-  main: 'Анна',
-  waitress: 'Официантка',
-  waitress2: 'Официантка',
+  Автор: 'narrator',
+  Минг: 'chef',
+  Анна: 'main',
 }
 
 const variableMap: Record<string, string> = {
-  harsh: 'Прямолинейность',
+  emotion: 'Эмоциональность',
   control: 'Сдержанность',
 }
 
@@ -104,13 +103,13 @@ export const SceneInner = ({
         <div className='character-container'>
           <Character
             visible={!(transitionInProgress && characterChanged)}
-            id={character.id}
+            id={characterNameMap[character.id]}
             position={character.position}
           />
 
           <Dialog
             visible={!transitionInProgress}
-            name={characterNameMap[character.id]}
+            name={character.id}
             text={text}
             italic={state.italicStyle}
             options={options}
@@ -133,11 +132,14 @@ export const Scene = ({ story, onFinish }: SceneProps): React.ReactElement => {
 
   const parsedTags = parseTags(currentTags ?? [])
 
-  const characterId = parsedTags['character']
+  let characterId = undefined
+  const textParts = currentText?.split(':') ?? []
+  if (textParts[0] !== 'Автор') characterId = textParts[0]
+
   const location = parsedTags['location']
   const italicStyle = parsedTags['italic'] !== undefined
   const bgTransition = parsedTags['transition'] !== undefined
-  const position = (parsedTags['position'] ?? characterId === 'main') ? 'left' : 'right'
+  const position = (parsedTags['position'] ?? characterId === 'Анна') ? 'left' : 'right'
 
   if (location !== undefined) {
     currentLocationRef.current = location
@@ -149,13 +151,19 @@ export const Scene = ({ story, onFinish }: SceneProps): React.ReactElement => {
     setInfoText(`${variableMap[variableName]} + 1`)
   }, [])
 
+  const onInfoChange = useCallback((_variableName: string, value: any) => {
+    setInfoText(value)
+  }, [])
+
   useEffect(() => {
-    story.ObserveVariable('harsh', onVariableChange)
+    story.ObserveVariable('emotion', onVariableChange)
     story.ObserveVariable('control', onVariableChange)
+    story.ObserveVariable('info', onInfoChange)
 
     return () => {
-      story.RemoveVariableObserver(onVariableChange, 'harsh')
+      story.RemoveVariableObserver(onVariableChange, 'emotion')
       story.RemoveVariableObserver(onVariableChange, 'control')
+      story.ObserveVariable('info', onInfoChange)
     }
   }, [story])
 
@@ -210,7 +218,7 @@ export const Scene = ({ story, onFinish }: SceneProps): React.ReactElement => {
       onOptionChoose={onOptionClick}
       locationId={currentLocationRef.current}
       character={character}
-      text={currentText ?? ''}
+      text={textParts[1] ?? ''}
       italicStyle={italicStyle}
       options={options}
       infoText={infoText}

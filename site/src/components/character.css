@@ -1,7 +1,7 @@
 .character {
   position: absolute;
   bottom: 0;
-  height: calc(0.9 * var(--viewport-available-height));
+  height: calc(0.85 * var(--viewport-available-height));
   display: flex;
   align-items: center;
   justify-content: center;
